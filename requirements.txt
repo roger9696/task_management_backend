@@ -1,0 +1,4 @@
+djando
+djangorestframework
+drf_yasg
+django-cors-headers
