@@ -1,11 +1,12 @@
 
 from rest_framework.views import APIView
-from .serializers import Userserializer
+from .serializers import Userserializer, TaskSerializer
 from rest_framework.response import Response
-from .models import User
+from .models import User, Task
 from rest_framework.exceptions import AuthenticationFailed
 import jwt, datetime
 from datetime import datetime, timezone
+from rest_framework import generics
 
 
 
@@ -99,3 +100,15 @@ class LogoutView(APIView):
     }
     return response
   
+
+
+
+class TaskCreatView(generics.ListCreateAPIView):
+   queryset = Task.objects.all()
+   serializer_class = TaskSerializer
+
+
+class TaskRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+   queryset = Task.objects.all()
+   serializer_class = TaskSerializer
+   lookup_field = 'pk'

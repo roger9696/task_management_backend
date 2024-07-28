@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Task
 
 class Userserializer(serializers.ModelSerializer):
   class Meta:
@@ -16,3 +16,8 @@ class Userserializer(serializers.ModelSerializer):
       instance.set_password(password)
     instance.save()
     return instance
+  
+class TaskSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Task
+    fields = '__all__'

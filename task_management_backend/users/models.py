@@ -11,3 +11,13 @@ class User(AbstractUser):
 
   USERNAME_FIELD = 'email'
   REQUIRED_FIELDS = []
+
+
+class Task(models.Model):
+    task_name = models.CharField(max_length=255)
+    task_status = models.CharField(max_length=255)
+    created_date = models.DateField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.task_name
