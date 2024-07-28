@@ -51,25 +51,42 @@ class LoginView(APIView):
 
     return response
 
-
 class UserView(APIView):
-  def get(self, request):
-    token = request.COOKIES.get('jwt')
+    def get(self, request):
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            token = auth_header.split(' ')[1]  # Extract the token
+            try:
+                payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+                user = User.objects.filter(id=payload['id']).first()
+                serializer = Userserializer(user)
+                return Response(serializer.data)
+            except jwt.ExpiredSignatureError:
+                return Response({'error': 'Token has expired'})
+        return Response({'error': 'Token is missing or invalid'})
 
-    if not token:
-      raise AuthenticationFailed('UnAuthenticated (no-token)')  
+
+
+# class UserView(APIView):
+#   def get(self, request):
+#     token = request.headers.get('Authorization')
+
+#     print(token)
+
+#     if not token:
+#       raise AuthenticationFailed('UnAuthenticated (no-token)')  
     
-    try:
-       payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+#     try:
+#        payload = jwt.decode(token, 'secret', algorithms=['HS256'])
 
-    except jwt.ExpiredSignatureError:
-       raise AuthenticationFailed('UnAuthenticated(token expired)')
+#     except jwt.ExpiredSignatureError:
+#        raise AuthenticationFailed('UnAuthenticated(token expired)')
 
 
-    user = User.objects.filter(id=payload['id']).first()
-    serializer = Userserializer(user)
+#     user = User.objects.filter(id=payload['id']).first()
+#     serializer = Userserializer(user)
 
-    return Response(serializer.data)
+#     return Response(serializer.data)
 
 
 

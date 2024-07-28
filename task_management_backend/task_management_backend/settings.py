@@ -43,8 +43,32 @@ INSTALLED_APPS = [
 
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',  # Allow requests from this origin
+]
+
+CORS_ALLOW_CREDENTIALS = True  # Allow credentials (cookies, authorization headers)
+
+CORS_ALLOW_HEADERS = [
+    'Content-Type',
+    'Accept',
+    'Origin',
+    'Accept-Language',
+    'Accept-Encoding',
+    'Accept-Charset',
+    'Keep-Alive',
+    'Connection',
+    'Host',
+    'User-Agent',
+    'Authorization',
+    'Credentials',
+]
+
+
+
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -87,7 +111,7 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': '127.0.0.1',
         'PORT': '3306',
-        'OPTION': {'init_command': "SET sql_mode='STRICT_TRANS_TABLE', "}
+        
     }
 }
 
