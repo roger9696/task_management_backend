@@ -7,6 +7,8 @@ from rest_framework.exceptions import AuthenticationFailed
 import jwt, datetime
 from datetime import datetime, timezone
 from rest_framework import generics
+from rest_framework import status
+
 
 
 
@@ -15,9 +17,19 @@ from rest_framework import generics
 class RegisterView(APIView):
   def post(self, request):
     serializer = Userserializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
-    return Response(serializer.data)
+    if serializer.is_valid(raise_exception=True):
+      serializer.save()
+      return Response({
+    "success": True,
+    "message": "User created successfully",
+    "data": serializer.data
+}, status=status.HTTP_201_CREATED)
+    else:
+        return Response({
+    "success": False,
+    "message": "User creation failed",
+    "errors": serializer.errors
+}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -40,6 +52,7 @@ class LoginView(APIView):
       'iat': datetime.now(timezone.utc).timestamp()
 
     }
+    
 
     token = jwt.encode(payload, 'secret', algorithm='HS256')
 
@@ -47,7 +60,8 @@ class LoginView(APIView):
     
     response.set_cookie(key='jwt', value=token, httponly=True)
     response.data = {
-      'jwt': token
+      'jwt': token,
+      'ok': True
     }
 
     return response
